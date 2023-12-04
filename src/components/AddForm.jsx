@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuid } from "uuid";
 import Button from "./common/Button";
 import { useDispatch } from "react-redux";
-import { addLetter } from "redux/modules/letters";
-
+import { __addLetters, addLetter } from "redux/modules/lettersSlice";
+import { getUser } from "redux/modules/signupSlice";
+import { useSelector } from "react-redux/es/hooks/useSelector";
+import { getAuth } from "redux/modules/authSlice";
 export default function AddForm() {
   // const { setLetters } = useContext(LetterContext);
   const dispatch = useDispatch();
@@ -12,21 +14,29 @@ export default function AddForm() {
   const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [member, setMember] = useState("카리나");
+  const user = useSelector((state) => state.authSlice);
+  const signup = useSelector((state) => state.authSlice);
+
+  const localStorageData = JSON.parse(localStorage.getItem("loginData"));
+  useEffect(() => {});
 
   const onAddLetter = (event) => {
     event.preventDefault();
-    if (!nickname || !content) return alert("닉네임과 내용은 필수값입니다.");
+    if (!localStorageData.nickname || !content)
+      return alert("닉네임과 내용은 필수값입니다.");
 
     const newLetter = {
       id: uuid(),
-      nickname,
+      nickname: localStorageData.nickname,
       content,
       avatar: null,
       writedTo: member,
       createdAt: new Date(),
+      userid: localStorageData.id,
     };
 
     dispatch(addLetter(newLetter));
+    dispatch(__addLetters(newLetter));
     setNickname("");
     setContent("");
   };
@@ -37,7 +47,7 @@ export default function AddForm() {
         <label>닉네임:</label>
         <input
           onChange={(event) => setNickname(event.target.value)}
-          value={nickname}
+          value={localStorageData.nickname}
           placeholder="최대 20글자까지 작성할 수 있습니다."
           maxLength={20}
         />

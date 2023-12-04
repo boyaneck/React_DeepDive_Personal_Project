@@ -6,9 +6,13 @@ import { getFormattedDate } from "util/date";
 
 export default function LetterCard({ letter }) {
   const navigate = useNavigate();
-
+  const localStorageData = JSON.parse(localStorage.getItem("loginData"));
+  console.log("nickname", localStorageData.nickname);
+  const data = localStorageData.nickname;
   return (
-    <LetterWrapper onClick={() => navigate(`/detail/${letter.id}`)}>
+    <LetterWrapper
+      onClick={() => navigate(`/detail/${letter.id}`, { state: data })}
+    >
       <UserInfo>
         <Avatar src={letter.avatar} />
         <NicknameAndDate>

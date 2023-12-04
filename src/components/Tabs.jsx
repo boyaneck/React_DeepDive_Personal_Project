@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { setMember } from "redux/modules/member";
+import { setMember } from "redux/modules/memberSlice";
 
 export default function Tabs() {
   const activeMember = useSelector((state) => state.member);
@@ -8,7 +8,7 @@ export default function Tabs() {
 
   const onActiveMember = (event) => {
     if (event.target === event.currentTarget) return;
-
+    console.log("event");
     dispatch(setMember(event.target.textContent));
   };
   return (

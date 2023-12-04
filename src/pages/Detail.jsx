@@ -1,11 +1,11 @@
 import Avatar from "components/common/Avatar";
 import Button from "components/common/Button";
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getFormattedDate } from "util/date";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteLetter, editLetter } from "redux/modules/letters";
+import { deleteLetter, editLetter } from "redux/modules/lettersSlice";
 
 export default function Detail() {
   const dispatch = useDispatch();
@@ -13,18 +13,18 @@ export default function Detail() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editingText, setEditingText] = useState("");
+  const localStorageData = JSON.parse(localStorage.getItem("loginData"));
   const navigate = useNavigate();
   const { id } = useParams();
-  const { avatar, nickname, createdAt, writedTo, content } = letters.find(
+  const { avatar, nickname, createdAt, writedTo, content } = letters?.find(
     (letter) => letter.id === id
   );
-
   const onDeleteBtn = () => {
     const answer = window.confirm("정말로 삭제하시겠습니까?");
     if (!answer) return;
 
     dispatch(deleteLetter(id));
-    navigate("/");
+    navigate("/home");
   };
   const onEditDone = () => {
     if (!editingText) return alert("수정사항이 없습니다.");
@@ -35,7 +35,7 @@ export default function Detail() {
   };
   return (
     <Container>
-      <Link to="/">
+      <Link to="/home">
         <HomeBtn>
           <Button text="홈으로" />
         </HomeBtn>
@@ -65,10 +65,12 @@ export default function Detail() {
         ) : (
           <>
             <Content>{content}</Content>
-            <BtnsWrapper>
-              <Button text="수정" onClick={() => setIsEditing(true)} />
-              <Button text="삭제" onClick={onDeleteBtn} />
-            </BtnsWrapper>
+            {localStorageData.nickname === nickname ? (
+              <BtnsWrapper>
+                <Button text="수정" onClick={() => setIsEditing(true)} />
+                <Button text="삭제" onClick={onDeleteBtn} />
+              </BtnsWrapper>
+            ) : null}
           </>
         )}
       </DetailWrapper>

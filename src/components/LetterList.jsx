@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import LetterCard from "./LetterCard";
-
+import { useEffect } from "react";
+import { Dispatch } from "react";
+import { __addLetters } from "redux/modules/lettersSlice";
 export default function LetterList() {
   const activeMember = useSelector((state) => state.member);
   const letters = useSelector((state) => state.letters);
